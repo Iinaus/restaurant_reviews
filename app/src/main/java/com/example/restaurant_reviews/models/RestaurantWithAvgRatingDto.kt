@@ -14,5 +14,5 @@ data class RestaurantWithAvgRatingDto(
 data class RestaurantsWithAvgRatingState(
     val error: String? = null,
     val loading: Boolean = false,
-    val productsWithRatings: List<RestaurantWithAvgRatingDto> = emptyList()
+    val restaurantsWithRatings: List<RestaurantWithAvgRatingDto> = emptyList()
 )
