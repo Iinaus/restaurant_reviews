@@ -96,13 +96,13 @@ fun RestaurantWithAvgRatingItem(modifier: Modifier = Modifier, item: RestaurantW
         modifier = Modifier.fillMaxWidth().padding(8.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
-        Row(modifier = Modifier.fillMaxWidth().padding(8.dp)) {
+        Row(modifier = Modifier.fillMaxWidth().padding(10.dp)) {
             AsyncImage(
                 model = R.drawable.review,
                 contentDescription = "Restaurant list placeholder image",
                 modifier = Modifier.size(100.dp).clip(RoundedCornerShape(8.dp))
             )
-            Column(modifier = Modifier.weight(1f).padding(12.dp)) {
+            Column(modifier = Modifier.weight(1f).padding(8.dp)) {
                 Text(
                     item.name,
                     style = MaterialTheme.typography.titleMedium,
@@ -111,6 +111,20 @@ fun RestaurantWithAvgRatingItem(modifier: Modifier = Modifier, item: RestaurantW
                     overflow = TextOverflow.Ellipsis
                 )
                 RatingBar(rating = item.rating ?: 0f, reviewCount = item.reviewCount)
+                InfoBar(cuisine = item.cuisine, priceRange = item.priceRange)
+                Text(
+                    item.address,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = Color.Gray,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+                Text(
+                    item.openStatus,
+                    style = MaterialTheme.typography.bodySmall,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.Green
+                )
             }
         }
     }
@@ -141,9 +155,19 @@ fun RatingBar(modifier: Modifier = Modifier, rating: Float, reviewCount: Int) {
         Spacer(modifier = Modifier.width(4.dp))
         Text(rating.toString())
         Spacer(modifier = Modifier.width(4.dp))
-        Text("($reviewCount)")
+        Text("($reviewCount)", color = Color.Gray)
     }
 
+}
+
+@Composable
+fun InfoBar(modifier: Modifier = Modifier, cuisine: String, priceRange: String) {
+    Row {
+        Spacer(modifier = Modifier.width(4.dp))
+        Text(cuisine.toString(), style = MaterialTheme.typography.bodySmall,)
+        Spacer(modifier = Modifier.width(4.dp))
+        Text(priceRange.toString(), style = MaterialTheme.typography.bodySmall, color = Color.Gray)
+    }
 }
 
 @Preview
