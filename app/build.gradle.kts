@@ -54,6 +54,7 @@ dependencies {
 
     implementation("androidx.lifecycle:lifecycle-viewmodel-savedstate:2.7.0")
     implementation("com.google.dagger:hilt-android:2.55")
+    implementation(libs.androidx.lifecycle.runtime.compose.android)
     kapt("com.google.dagger:hilt-android-compiler:2.55")
 
     kapt("androidx.hilt:hilt-compiler:1.2.0")
