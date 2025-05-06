@@ -21,3 +21,19 @@ data class RestaurantsWithAvgRatingState(
     val loading: Boolean = false,
     val restaurantsWithRatings: List<RestaurantWithAvgRatingDto> = emptyList()
 )
+
+data class RatingDto(
+    val id: Int,
+    @SerializedName("user_id")
+    val userId: Int?,
+    val value: Float,
+    val description: String?,
+    @SerializedName("date_rated")
+    val dateRated: String
+)
+
+data class RatingState(
+    val error: String? = null,
+    val loading: Boolean = false,
+    val restaurant: RestaurantWithAvgRatingDto? = null
+)
