@@ -1,5 +1,6 @@
 package com.example.restaurant_reviews
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -45,15 +46,21 @@ import com.example.restaurant_reviews.ui.theme.Restaurant_reviewsTheme
 import com.example.restaurant_reviews.vm.RestaurantsWithReviewsViewModel
 
 @Composable
-fun RestaurantsWithAvgRatingsRoot(modifier: Modifier = Modifier) {
-    val viewModel = hiltViewModel<RestaurantsWithReviewsViewModel>()
+fun RestaurantsWithAvgRatingsRoot(
+    modifier: Modifier = Modifier,
+    viewModel: RestaurantsWithReviewsViewModel,
+    onNavigate: (Int) -> Unit) {
+
     val state by viewModel.restaurantState.collectAsStateWithLifecycle()
-    RestaurantsWithAvgRatingsScreen(state = state)
+    RestaurantsWithAvgRatingsScreen(state = state, onNavigate = onNavigate)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RestaurantsWithAvgRatingsScreen(modifier: Modifier = Modifier, state: RestaurantsWithAvgRatingState) {
+fun RestaurantsWithAvgRatingsScreen(
+    modifier: Modifier = Modifier,
+    state: RestaurantsWithAvgRatingState,
+    onNavigate: (Int) -> Unit) {
     Scaffold(topBar = {
         TopAppBar(title = {
             Text("Restaurants")
@@ -87,7 +94,7 @@ fun RestaurantsWithAvgRatingsScreen(modifier: Modifier = Modifier, state: Restau
                     items(state.restaurantsWithRatings, key = { restaurant ->
                         restaurant.id
                     }) { restaurantWithAvgRating ->
-                        RestaurantWithAvgRatingItem(item = restaurantWithAvgRating)
+                        RestaurantWithAvgRatingItem(item = restaurantWithAvgRating, onNavigate = onNavigate)
                     }
                 }
             }
@@ -97,9 +104,17 @@ fun RestaurantsWithAvgRatingsScreen(modifier: Modifier = Modifier, state: Restau
 }
 
 @Composable
-fun RestaurantWithAvgRatingItem(modifier: Modifier = Modifier, item: RestaurantWithAvgRatingDto) {
+fun RestaurantWithAvgRatingItem(
+    modifier: Modifier = Modifier,
+    item: RestaurantWithAvgRatingDto,
+    onNavigate: (Int) -> Unit) {
     Card(
-        modifier = Modifier.fillMaxWidth().padding(8.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable {
+                onNavigate(item.id)
+            }
+            .padding(8.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Row(modifier = Modifier.fillMaxWidth().padding(10.dp)) {
@@ -199,6 +214,6 @@ private fun RestaurantsWithAvgRatingsScreenPreview(modifier: Modifier = Modifier
                     openStatus = "Closing soon",
                     rating = 3f, reviewCount = 6)
             ))
-        RestaurantsWithAvgRatingsScreen(state = state)
+        RestaurantsWithAvgRatingsScreen(state = state, onNavigate = {})
     }
 }

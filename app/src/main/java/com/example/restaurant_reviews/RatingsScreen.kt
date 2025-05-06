@@ -43,26 +43,26 @@ import coil.compose.AsyncImage
 import com.example.restaurant_reviews.models.RatingDto
 import com.example.restaurant_reviews.models.RatingState
 import com.example.restaurant_reviews.models.RestaurantDto
-import com.example.restaurant_reviews.models.RestaurantWithAvgRatingDto
 import com.example.restaurant_reviews.ui.theme.Restaurant_reviewsTheme
 import com.example.restaurant_reviews.vm.RestaurantsWithReviewsViewModel
-import com.google.gson.annotations.SerializedName
 
 @Composable
-fun RatingsScreenRoot(modifier: Modifier = Modifier) {
-    val viewModel = hiltViewModel<RestaurantsWithReviewsViewModel>()
+fun RatingsScreenRoot(
+    modifier: Modifier = Modifier,
+    viewModel: RestaurantsWithReviewsViewModel,
+    onNavigate: () -> Unit) {
     val state by viewModel.ratingsByRestaurantState.collectAsStateWithLifecycle()
-    RatingScreen(state = state)
+    RatingScreen(state = state, onNavigate = onNavigate)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RatingScreen(modifier: Modifier = Modifier, state: RatingState) {
+fun RatingScreen(modifier: Modifier = Modifier, state: RatingState, onNavigate: () -> Unit) {
     Scaffold(topBar = {
         TopAppBar(title = {
             Text("Ratings")
         }, navigationIcon = {
-            IconButton(onClick = { }) {
+            IconButton(onClick = { onNavigate() }) {
                 Icon(Icons.AutoMirrored.Default.ArrowBack, contentDescription = "Back")
             }
         })
@@ -232,6 +232,6 @@ private fun RatingsScreenPreview(modifier: Modifier = Modifier) {
                     )
                 )
             )
-        RatingScreen(state = state)
+        RatingScreen(state = state, onNavigate = {})
     }
 }
