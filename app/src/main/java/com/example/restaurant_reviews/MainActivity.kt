@@ -21,24 +21,8 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             Restaurant_reviewsTheme {
-                RestaurantsWithAvgRatingsRoot()
+                RatingsScreenRoot()
             }
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    Restaurant_reviewsTheme {
-        Greeting("Android")
     }
 }

@@ -3,6 +3,7 @@ package com.example.restaurant_reviews.vm
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.restaurant_reviews.DataApi
+import com.example.restaurant_reviews.models.RatingState
 import com.example.restaurant_reviews.models.RestaurantsWithAvgRatingState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,6 +16,9 @@ import javax.inject.Inject
 class RestaurantsWithReviewsViewModel @Inject constructor(private val restaurantService: DataApi) : ViewModel() {
     private val _restaurantState = MutableStateFlow(RestaurantsWithAvgRatingState())
     val restaurantState = _restaurantState.asStateFlow()
+
+    private val _ratingsByRestaurantState = MutableStateFlow(RatingState())
+    val ratingsByRestaurantState = _ratingsByRestaurantState.asStateFlow()
 
     init {
         getRestaurantsWithReviews()

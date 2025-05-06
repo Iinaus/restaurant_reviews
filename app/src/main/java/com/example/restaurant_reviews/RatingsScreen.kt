@@ -1,0 +1,237 @@
+package com.example.restaurant_reviews
+
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import coil.compose.AsyncImage
+import com.example.restaurant_reviews.models.RatingDto
+import com.example.restaurant_reviews.models.RatingState
+import com.example.restaurant_reviews.models.RestaurantDto
+import com.example.restaurant_reviews.models.RestaurantWithAvgRatingDto
+import com.example.restaurant_reviews.ui.theme.Restaurant_reviewsTheme
+import com.example.restaurant_reviews.vm.RestaurantsWithReviewsViewModel
+import com.google.gson.annotations.SerializedName
+
+@Composable
+fun RatingsScreenRoot(modifier: Modifier = Modifier) {
+    val viewModel = hiltViewModel<RestaurantsWithReviewsViewModel>()
+    val state by viewModel.ratingsByRestaurantState.collectAsStateWithLifecycle()
+    RatingScreen(state = state)
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun RatingScreen(modifier: Modifier = Modifier, state: RatingState) {
+    Scaffold(topBar = {
+        TopAppBar(title = {
+            Text("Ratings")
+        }, navigationIcon = {
+            IconButton(onClick = { }) {
+                Icon(Icons.AutoMirrored.Default.ArrowBack, contentDescription = "Back")
+            }
+        })
+    })  { paddingValues ->
+        when {
+            state.loading -> {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(paddingValues),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator()
+                }
+            }
+            else -> {
+                state.error?.let { err ->
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(paddingValues),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(err)
+                    }
+                } ?: LazyColumn(modifier = Modifier.fillMaxSize().padding(paddingValues)) {
+                    item {
+                        state.restaurant?.let { restaurant ->
+                            RestaurantCard(item = restaurant)
+                        }
+                    }
+                    items(state.restaurant?.review ?: emptyList(), key = { restaurant ->
+                        restaurant.id
+                    }) { rating ->
+                        RatingItem(item = rating)
+                    }
+                }
+            }
+        }
+
+    }
+}
+
+@Composable
+fun RestaurantCard(modifier: Modifier = Modifier, item: RestaurantDto) {
+    Card(
+        modifier = Modifier.fillMaxWidth().padding(8.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+    ) {
+        Row(modifier = Modifier.fillMaxWidth().padding(10.dp)) {
+            AsyncImage(
+                model = R.drawable.review,
+                contentDescription = "Restaurant list placeholder image",
+                modifier = Modifier.size(100.dp).clip(RoundedCornerShape(8.dp))
+            )
+            Column(modifier = Modifier.weight(1f).padding(8.dp)) {
+                Text(
+                    item.name,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+                InfoBar(cuisine = item.cuisine, priceRange = item.priceRange)
+                Text(
+                    item.address,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = Color.Gray,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+                Text(
+                    item.openStatus,
+                    style = MaterialTheme.typography.bodySmall,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.Green
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun RatingItem(modifier: Modifier = Modifier, item: RatingDto) {
+    Card(
+        modifier = Modifier.fillMaxWidth().padding(8.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+    ) {
+        Column(modifier = Modifier.padding(8.dp)) {
+            ReviewRatingBar(rating = item.value)
+            Spacer(modifier = Modifier.height(10.dp))
+            item.description?.let {
+                Text(
+                    it,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = Color.Black,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
+            Spacer(modifier = Modifier.height(10.dp))
+            Text(
+                item.dateRated,
+                style = MaterialTheme.typography.bodySmall,
+                fontWeight = FontWeight.Bold,
+                color = Color.LightGray
+            )
+        }
+    }
+}
+
+@Composable
+fun ReviewRatingBar(modifier: Modifier = Modifier, rating: Float) {
+    val filledStars = rating.toInt()
+    val hasHalfStar = rating - filledStars >= 0.5
+    val emptyStars = 5 - filledStars - if (hasHalfStar) 1 else 0
+
+    Row {
+        repeat(filledStars) {
+            Icon(Icons.Filled.Star, contentDescription = "Full star", tint = Color(0xFFFFD700))
+        }
+
+        if(hasHalfStar) {
+            Icon(
+                painterResource(id = R.drawable.star_half) ,
+                contentDescription = "Full star",
+                tint = Color(0xFFFFD700))
+        }
+
+        repeat(emptyStars) {
+            Icon(Icons.Filled.Star, contentDescription = "Empty star", tint = Color.LightGray)
+        }
+
+        Spacer(modifier = Modifier.width(4.dp))
+        Text(rating.toString())
+    }
+}
+
+@Preview
+@Composable
+private fun RatingsScreenPreview(modifier: Modifier = Modifier) {
+    Restaurant_reviewsTheme {
+        val state =
+            RatingState(restaurant =
+                RestaurantDto(
+                    id = 1,
+                    name = "Ravintola",
+                    cuisine = "Italian",
+                    priceRange = "$$",
+                    address = "Osoite",
+                    openStatus = "Closing soon" ,
+                    rating = 3f,
+                    reviewCount = 4,
+                    review = listOf(
+                        RatingDto(
+                        id = 1,
+                        userId = null,
+                        value = 4.5f,
+                        description = "Lipsum",
+                        dateRated = "Tähän joku päivämäärä ja kellonaika"),
+                        RatingDto(
+                            id = 2,
+                            userId = null,
+                            value = 0f,
+                            description = "Lipsum",
+                            dateRated = "Tähän joku päivämäärä ja kellonaika")
+                    )
+                )
+            )
+        RatingScreen(state = state)
+    }
+}
