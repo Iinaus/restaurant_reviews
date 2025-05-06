@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.restaurant_reviews.DataApi
 import com.example.restaurant_reviews.models.RatingState
+import com.example.restaurant_reviews.models.RestaurantDto
 import com.example.restaurant_reviews.models.RestaurantsWithAvgRatingState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -43,6 +44,31 @@ class RestaurantsWithReviewsViewModel @Inject constructor(private val restaurant
                 }
             } finally {
                 _restaurantState.update { currentState ->
+                    currentState.copy(loading = false)
+                }
+            }
+        }
+    }
+
+    private fun getRestaurant(id: String) {
+        viewModelScope.launch {
+            try {
+                _ratingsByRestaurantState.update { currentState ->
+                    currentState.copy(loading = true, error = null)
+                }
+
+                val restaurant = restaurantService.getRestaurant(id)
+
+                _ratingsByRestaurantState.update { currentState ->
+                    currentState.copy(restaurant = restaurant)
+                }
+
+            } catch (e: Exception) {
+                _ratingsByRestaurantState.update { currentState ->
+                    currentState.copy(error = e.toString())
+                }
+            } finally {
+                _ratingsByRestaurantState.update { currentState ->
                     currentState.copy(loading = false)
                 }
             }

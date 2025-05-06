@@ -60,7 +60,7 @@ fun RatingsScreenRoot(
 fun RatingScreen(modifier: Modifier = Modifier, state: RatingState, onNavigate: () -> Unit) {
     Scaffold(topBar = {
         TopAppBar(title = {
-            Text("Ratings")
+            Text(state.restaurant?.name ?: "Ratings")
         }, navigationIcon = {
             IconButton(onClick = { onNavigate() }) {
                 Icon(Icons.AutoMirrored.Default.ArrowBack, contentDescription = "Back")
@@ -227,11 +227,11 @@ private fun RatingsScreenPreview(modifier: Modifier = Modifier) {
                             id = 2,
                             userId = null,
                             value = 0f,
-                            description = "Lipsum",
+                            description = null,
                             dateRated = "Tähän joku päivämäärä ja kellonaika")
                     )
                 )
             )
-        RatingScreen(state = state, onNavigate = {})
+        RatingScreen(state = state, onNavigate = { })
     }
 }
