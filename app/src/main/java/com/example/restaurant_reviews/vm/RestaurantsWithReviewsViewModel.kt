@@ -58,7 +58,7 @@ class RestaurantsWithReviewsViewModel @Inject constructor(
         }
     }
 
-    private fun getRestaurant() {
+    fun getRestaurant() {
         viewModelScope.launch {
             try {
                 _ratingsByRestaurantState.update { currentState ->
@@ -84,7 +84,7 @@ class RestaurantsWithReviewsViewModel @Inject constructor(
         }
     }
 
-    private fun getRestaurantRating() {
+    fun getRestaurantRating() {
         viewModelScope.launch {
             try {
                 _ratingsByRestaurantState.update { currentState ->

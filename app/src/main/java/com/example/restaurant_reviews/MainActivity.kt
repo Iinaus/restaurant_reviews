@@ -36,7 +36,8 @@ class MainActivity : ComponentActivity() {
                     navigation("RestaurantsWithAvgRatings", route = "RestaurantsWithReviewFeature") {
                         composable("RestaurantsWithAvgRatings") { navGraph ->
                             val viewModel = navGraph.SharedViewModel<RestaurantsWithReviewsViewModel>(navController)
-                            RestaurantsWithAvgRatingsRoot(viewModel = viewModel, onNavigate = {
+                            RestaurantsWithAvgRatingsRoot(viewModel = viewModel, onNavigate = { chosenRestaurantId ->
+                                viewModel.setRestaurantId(chosenRestaurantId)
                                 navController.navigate("Ratings")
                             })
                         }
