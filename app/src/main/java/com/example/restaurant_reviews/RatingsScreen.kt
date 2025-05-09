@@ -165,14 +165,11 @@ fun RatingItem(modifier: Modifier = Modifier, item: RatingDto) {
                     Icon(Icons.Filled.Delete, contentDescription = "Remove Rating")
                 }
             }
-            Spacer(modifier = Modifier.height(10.dp))
             item.description?.let {
                 Text(
                     it,
                     style = MaterialTheme.typography.bodySmall,
-                    color = Color.Black,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
+                    color = Color.Black
                 )
             }
             Spacer(modifier = Modifier.height(10.dp))
