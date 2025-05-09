@@ -34,7 +34,7 @@ data class RestaurantDto(
     val rating: Float?,
     @SerializedName("review_count")
     val reviewCount: Int,
-    val review: List<RatingDto> = emptyList()
+    val reviews: List<RatingDto?> = emptyList()
 )
 
 data class RatingDto(

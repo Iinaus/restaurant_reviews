@@ -95,10 +95,12 @@ fun RatingScreen(modifier: Modifier = Modifier, state: RatingState, onNavigate: 
                             RestaurantCard(item = restaurant)
                         }
                     }
-                    items(state.restaurant?.review ?: emptyList(), key = { restaurant ->
-                        restaurant.id
+                    items(state.restaurant?.reviews ?: emptyList(), key = { restaurant ->
+                        restaurant?.id ?: ""
                     }) { rating ->
-                        RatingItem(item = rating)
+                        if (rating != null) {
+                            RatingItem(item = rating)
+                        }
                     }
                 }
             }
@@ -196,7 +198,7 @@ private fun RatingsScreenPreview(modifier: Modifier = Modifier) {
                     openStatus = "Closing soon" ,
                     rating = 3f,
                     reviewCount = 4,
-                    review = listOf(
+                    reviews = listOf(
                         RatingDto(
                         id = 1,
                         userId = null,
