@@ -152,36 +152,6 @@ fun RestaurantWithAvgRatingItem(
 }
 
 @Composable
-fun RatingBar(modifier: Modifier = Modifier, rating: Float, reviewCount: Int) {
-    val filledStars = rating.toInt()
-    val hasHalfStar = rating - filledStars >= 0.5
-    val emptyStars = 5 - filledStars - if (hasHalfStar) 1 else 0
-
-    Row {
-        repeat(filledStars) {
-            Icon(Icons.Filled.Star, contentDescription = "Full star", tint = Color(0xFFFFD700))
-        }
-
-        if(hasHalfStar) {
-            Icon(
-                painterResource(id = R.drawable.star_half) ,
-                contentDescription = "Full star",
-                tint = Color(0xFFFFD700))
-        }
-
-        repeat(emptyStars) {
-            Icon(Icons.Filled.Star, contentDescription = "Empty star", tint = Color.LightGray)
-        }
-
-        Spacer(modifier = Modifier.width(4.dp))
-        Text(rating.toString())
-        Spacer(modifier = Modifier.width(4.dp))
-        Text("($reviewCount)", color = Color.Gray)
-    }
-
-}
-
-@Composable
 fun InfoBar(modifier: Modifier = Modifier, cuisine: String, priceRange: String) {
     Row {
         Spacer(modifier = Modifier.width(4.dp))

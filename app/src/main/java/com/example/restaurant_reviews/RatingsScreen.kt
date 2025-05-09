@@ -15,6 +15,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -152,7 +153,13 @@ fun RatingItem(modifier: Modifier = Modifier, item: RatingDto) {
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Column(modifier = Modifier.padding(8.dp)) {
-            ReviewRatingBar(rating = item.value)
+            Row {
+                RatingBar(rating = item.value ?: 0f, reviewCount = 1, showReviewCount = false)
+                Spacer(modifier = Modifier.weight(1f))
+                IconButton(onClick = { }) {
+                    Icon(Icons.Filled.Delete, contentDescription = "Remove Rating")
+                }
+            }
             Spacer(modifier = Modifier.height(10.dp))
             item.description?.let {
                 Text(
@@ -171,33 +178,6 @@ fun RatingItem(modifier: Modifier = Modifier, item: RatingDto) {
                 color = Color.LightGray
             )
         }
-    }
-}
-
-@Composable
-fun ReviewRatingBar(modifier: Modifier = Modifier, rating: Float) {
-    val filledStars = rating.toInt()
-    val hasHalfStar = rating - filledStars >= 0.5
-    val emptyStars = 5 - filledStars - if (hasHalfStar) 1 else 0
-
-    Row {
-        repeat(filledStars) {
-            Icon(Icons.Filled.Star, contentDescription = "Full star", tint = Color(0xFFFFD700))
-        }
-
-        if(hasHalfStar) {
-            Icon(
-                painterResource(id = R.drawable.star_half) ,
-                contentDescription = "Full star",
-                tint = Color(0xFFFFD700))
-        }
-
-        repeat(emptyStars) {
-            Icon(Icons.Filled.Star, contentDescription = "Empty star", tint = Color.LightGray)
-        }
-
-        Spacer(modifier = Modifier.width(4.dp))
-        Text(rating.toString())
     }
 }
 
