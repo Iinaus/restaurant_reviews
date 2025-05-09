@@ -55,6 +55,7 @@ fun RatingsScreenRoot(
 
     LaunchedEffect(true) {
         viewModel.getRestaurant()
+        viewModel.getRestaurantRating()
     }
 }
 
