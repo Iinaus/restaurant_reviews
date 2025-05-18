@@ -15,7 +15,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -32,12 +31,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.example.restaurant_reviews.models.RestaurantWithAvgRatingDto
@@ -49,10 +46,13 @@ import com.example.restaurant_reviews.vm.RestaurantsWithReviewsViewModel
 fun RestaurantsWithAvgRatingsRoot(
     modifier: Modifier = Modifier,
     viewModel: RestaurantsWithReviewsViewModel,
-    onNavigate: (Int) -> Unit) {
+    onNavigate: () -> Unit) {
 
     val state by viewModel.restaurantState.collectAsStateWithLifecycle()
-    RestaurantsWithAvgRatingsScreen(state = state, onNavigate = onNavigate)
+    RestaurantsWithAvgRatingsScreen(state = state, onNavigate = {chosenRestaurantId ->
+        viewModel.setRestaurantId(chosenRestaurantId)
+        onNavigate()
+    })
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -90,7 +90,9 @@ fun RestaurantsWithAvgRatingsScreen(
                     ) {
                         Text(err)
                     }
-                } ?: LazyColumn(modifier = Modifier.fillMaxSize().padding(paddingValues)) {
+                } ?: LazyColumn(modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues)) {
                     items(state.restaurantsWithRatings, key = { restaurant ->
                         restaurant.id
                     }) { restaurantWithAvgRating ->
@@ -117,13 +119,19 @@ fun RestaurantWithAvgRatingItem(
             .padding(8.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
-        Row(modifier = Modifier.fillMaxWidth().padding(10.dp)) {
+        Row(modifier = Modifier
+            .fillMaxWidth()
+            .padding(10.dp)) {
             AsyncImage(
                 model = R.drawable.review,
                 contentDescription = "Restaurant list placeholder image",
-                modifier = Modifier.size(100.dp).clip(RoundedCornerShape(8.dp))
+                modifier = Modifier
+                    .size(100.dp)
+                    .clip(RoundedCornerShape(8.dp))
             )
-            Column(modifier = Modifier.weight(1f).padding(8.dp)) {
+            Column(modifier = Modifier
+                .weight(1f)
+                .padding(8.dp)) {
                 Text(
                     item.name,
                     style = MaterialTheme.typography.titleMedium,
