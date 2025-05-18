@@ -5,8 +5,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.room.util.copy
 import com.example.restaurant_reviews.DataApi
+import com.example.restaurant_reviews.models.RatingDto
 import com.example.restaurant_reviews.models.RatingState
+import com.example.restaurant_reviews.models.RestaurantDto
 import com.example.restaurant_reviews.models.RestaurantsWithAvgRatingState
+import com.google.gson.annotations.SerializedName
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -52,6 +55,52 @@ class RestaurantsWithReviewsViewModel @Inject constructor(
                 }
             } finally {
                 _restaurantState.update { currentState ->
+                    currentState.copy(loading = false)
+                }
+            }
+        }
+    }
+
+    fun deleteRating(ratingId: Int) {
+        viewModelScope.launch {
+
+            _ratingsByRestaurantState.update { currentState ->
+                currentState.copy(loading = true)
+            }
+
+            try {
+
+                savedStateHandle.get<Int>("restaurantId")?.let { rId ->
+                    restaurantService.removeRating(rId, ratingId)
+                } ?: throw Exception("restaurant id cannot be found")
+
+                val reviews = _ratingsByRestaurantState.value.restaurant?.reviews ?: emptyList()
+                val remainingReviews = reviews.filter { rating ->
+                    rating?.id != ratingId
+                }
+
+                val restaurant = _ratingsByRestaurantState.value.restaurant
+                val newRestaurant = RestaurantDto(
+                    id = restaurant?.id ?: 0,
+                    name = restaurant?.name ?: "",
+                    cuisine = restaurant?.cuisine ?: "",
+                    priceRange = restaurant?.priceRange ?: "",
+                    address = restaurant?.address ?: "",
+                    openStatus = restaurant?.openStatus ?: "",
+                    rating = restaurant?.rating ?: 0f,
+                    reviewCount = restaurant?.reviewCount ?: 0,
+                    reviews = remainingReviews)
+
+                _ratingsByRestaurantState.update { currentState ->
+                    currentState.copy(restaurant = newRestaurant)
+                }
+
+            } catch (e: Exception) {
+                _ratingsByRestaurantState.update { currentState ->
+                    currentState.copy(error = e.toString())
+                }
+            } finally {
+                _ratingsByRestaurantState.update { currentState ->
                     currentState.copy(loading = false)
                 }
             }

@@ -51,7 +51,9 @@ fun RatingsScreenRoot(
     onNavigate: () -> Unit) {
 
     val state by viewModel.ratingsByRestaurantState.collectAsStateWithLifecycle()
-    RatingScreen(state = state, onNavigate = onNavigate)
+    RatingScreen(state = state, onNavigate = onNavigate, onRemove = { ratingId ->
+        viewModel.deleteRating(ratingId)
+    })
 
     LaunchedEffect(true) {
         viewModel.getRestaurant()
@@ -61,7 +63,7 @@ fun RatingsScreenRoot(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RatingScreen(modifier: Modifier = Modifier, state: RatingState, onNavigate: () -> Unit) {
+fun RatingScreen(modifier: Modifier = Modifier, state: RatingState, onNavigate: () -> Unit, onRemove: (Int) -> Unit) {
     Scaffold(topBar = {
         TopAppBar(title = {
             Text(state.restaurant?.name ?: "Ratings")
@@ -102,7 +104,7 @@ fun RatingScreen(modifier: Modifier = Modifier, state: RatingState, onNavigate: 
                         restaurant?.id ?: ""
                     }) { rating ->
                         if (rating != null) {
-                            RatingItem(item = rating)
+                            RatingItem(item = rating, onRemove = onRemove)
                         }
                     }
                 }
@@ -152,7 +154,7 @@ fun RestaurantCard(modifier: Modifier = Modifier, item: RestaurantDto) {
 }
 
 @Composable
-fun RatingItem(modifier: Modifier = Modifier, item: RatingDto) {
+fun RatingItem(modifier: Modifier = Modifier, item: RatingDto, onRemove: (Int) -> Unit) {
     Card(
         modifier = Modifier.fillMaxWidth().padding(8.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
@@ -161,7 +163,7 @@ fun RatingItem(modifier: Modifier = Modifier, item: RatingDto) {
             Row {
                 RatingBar(rating = item.value ?: 0f, reviewCount = 1, showReviewCount = false)
                 Spacer(modifier = Modifier.weight(1f))
-                IconButton(onClick = { }) {
+                IconButton(onClick = { onRemove(item.id) }) {
                     Icon(Icons.Filled.Delete, contentDescription = "Remove Rating")
                 }
             }
@@ -214,6 +216,6 @@ private fun RatingsScreenPreview(modifier: Modifier = Modifier) {
                     )
                 )
             )
-        RatingScreen(state = state, onNavigate = { })
+        RatingScreen(state = state, onNavigate = { }, onRemove = { })
     }
 }
