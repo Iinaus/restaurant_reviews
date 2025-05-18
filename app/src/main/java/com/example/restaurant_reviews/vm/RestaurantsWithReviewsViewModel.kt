@@ -36,7 +36,7 @@ class RestaurantsWithReviewsViewModel @Inject constructor(
         savedStateHandle["restaurantId"] = id
     }
 
-    private fun getRestaurantsWithReviews() {
+    fun getRestaurantsWithReviews() {
         viewModelScope.launch {
             try {
                 _restaurantState.update { currentState ->

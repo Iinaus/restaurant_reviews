@@ -51,9 +51,15 @@ fun RatingsScreenRoot(
     onNavigate: () -> Unit) {
 
     val state by viewModel.ratingsByRestaurantState.collectAsStateWithLifecycle()
-    RatingScreen(state = state, onNavigate = onNavigate, onRemove = { ratingId ->
-        viewModel.deleteRating(ratingId)
-    })
+    RatingScreen(state = state,
+        onNavigate = {
+            viewModel.getRestaurantsWithReviews()
+            onNavigate()
+        },
+        onRemove = { ratingId ->
+            viewModel.deleteRating(ratingId)
+        }
+    )
 
     LaunchedEffect(true) {
         viewModel.getRestaurant()
