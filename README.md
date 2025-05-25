@@ -34,7 +34,7 @@ With this exercise we practiced:
 
 ### Backend
 
-The backend for this application is implemented in Python and is available at [here](https://github.com/Iinaus/restaurant_review_backend). The backend was provided as part of the course and it follows a modular architecture with clearly separated components. It uses SQLite as the database and includes the following utility scripts.
+The backend for this application is implemented in Python and is available [here](https://github.com/Iinaus/restaurant_review_backend). The backend was provided as part of the course and it follows a modular architecture with clearly separated components. It uses SQLite as the database and includes the following utility scripts.
 
 ## Getting started
 
