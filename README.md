@@ -34,7 +34,7 @@ With this exercise we practiced:
 
 ### Backend
 
-The backend for this application is implemented in Python and is available at [juhaniguru/emo2025_backend](https://github.com/juhaniguru/emo2025_backend). The backend was provided as part of the course and it follows a modular architecture with clearly separated components. It uses SQLite as the database and includes the following utility scripts.
+The backend for this application is implemented in Python and is available at [here](https://github.com/Iinaus/restaurant_review_backend). The backend was provided as part of the course and it follows a modular architecture with clearly separated components. It uses SQLite as the database and includes the following utility scripts.
 
 ## Getting started
 
@@ -58,12 +58,12 @@ Ensure you have the following installed:
 ### Dev Setup Step-by-Step
 
 1. Clone the project
-2. Follow the instructions provided in the [emo2025_backend repository](https://github.com/juhaniguru/emo2025_backend) to set up and run the backend server.
+2. Follow the instructions provided in the [repository](https://github.com/Iinaus/restaurant_review_backend) to set up and run the backend server.
 3. Open in Android Studio:
-- Launch Android Studio.
-- Open the cloned restaurant_reviews project.
-- Allow Android Studio to sync and build the project. 
+   - Launch Android Studio.
+   - Open the cloned restaurant_reviews project.
+   - Allow Android Studio to sync and build the project. 
 4. Run the Application:
-- Connect an Android device or start an emulator.
-- Click on the "Run" button in Android Studio to build and deploy the app.
+   - Connect an Android device or start an emulator.
+   - Click on the "Run" button in Android Studio to build and deploy the app.
 
